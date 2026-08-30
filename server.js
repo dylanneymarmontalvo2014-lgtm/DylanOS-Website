@@ -18,7 +18,9 @@ const server = http.createServer((req, res) => {
       let contentType = 'text/html';
       if (filePath.endsWith('.js')) contentType = 'application/javascript';
       if (filePath.endsWith('.css')) contentType = 'text/css';
-      if (filePath.endsWith('.png') || filePath.endsWith('.webp') || filePath.endsWith('.jpg')) contentType = 'image/*';
+      if (filePath.endsWith('.png')) contentType = 'image/png';
+      if (filePath.endsWith('.webp')) contentType = 'image/webp';
+      if (filePath.endsWith('.jpg')) contentType = 'image/jpeg';
       if (filePath.endsWith('.svg')) contentType = 'image/svg+xml';
       
       res.writeHead(200, { 'Content-Type': contentType });
