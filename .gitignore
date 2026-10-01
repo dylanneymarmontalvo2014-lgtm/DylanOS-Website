@@ -1,0 +1,8 @@
+# Credenciales — NUNCA subir
+.env
+**/.env
+
+# Logs y archivos del sistema
+*.log
+.DS_Store
+node_modules/

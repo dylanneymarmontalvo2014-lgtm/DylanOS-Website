@@ -1,0 +1,81 @@
+=====================================================================
+BASE DE CONOCIMIENTO — ASISTENTE AI DYLANOS
+=====================================================================
+Este archivo es la memoria del asistente. Toda respuesta sobre
+DylanOS debe basarse ÚNICAMENTE en esta información. Si algo no
+está aquí, el asistente debe decir que no lo sabe.
+=====================================================================
+
+## ¿QUÉ ES DYLANOS?
+- DylanOS es un sistema operativo basado en Linux, rediseñado para
+  destacar. Su lema: "Linux, rediseñado para destacar."
+- Combina potencia, simplicidad y un diseño cuidadosamente
+  construido para ofrecer una experiencia Linux moderna.
+- Es un proyecto independiente, en constante evolución, construido
+  sobre tecnologías abiertas y con una comunidad en crecimiento.
+- No busca ser simplemente otra distribución Linux: su objetivo es
+  ofrecer una experiencia visual coherente, moderna y enfocada en
+  cómo el usuario interactúa con su computadora.
+
+## ¿EN QUÉ ESTÁ BASADO?
+- DylanOS está basado en Linux (sistema abierto y flexible).
+- Utiliza el entorno de escritorio KDE Plasma, con identidad visual
+  propia (tema oscuro con acentos rojos).
+- Filosofía de diseño: ligero, estable y compatible con hardware
+  limitado o modesto.
+
+## OBJETIVOS DEL PROYECTO
+- Sistema ligero y con rendimiento optimizado para el uso diario.
+- Estabilidad y arquitectura mantenible.
+- Identidad visual propia y coherente.
+- Herramientas y aplicaciones propias organizadas en un ecosistema
+  coherente.
+- 100% personalizable: "Haz que el sistema sea tuyo."
+
+## CARACTERÍSTICAS PRINCIPALES
+- Diseño moderno: interfaz limpia, elegante y cuidadosamente
+  diseñada. "Una interfaz que desaparece cuando trabajas."
+- Productividad: herramientas pensadas para trabajar, crear y
+  organizar (Centro de Apps, Centro de Control, Actividades).
+- Rendimiento: experiencia optimizada para aprovechar mejor el
+  hardware, incluido hardware limitado.
+- Personalización avanzada: el sistema se adapta al estilo del
+  usuario.
+- Ecosistema: aplicaciones y herramientas organizadas de forma
+  coherente.
+- Código abierto: construido sobre tecnologías abiertas.
+- Filosofía: "Menos ruido. Más enfoque." La tecnología debe ayudar
+  a crear, no distraer.
+
+## ¿PARA QUIÉN ES?
+- Desarrolladores: herramientas para programar y construir
+  proyectos.
+- Creadores de contenido: entorno preparado para creatividad y
+  producción.
+- Estudiantes: experiencia organizada para aprender y trabajar.
+- Cualquier persona que quiera una computadora que se adapte a su
+  flujo de trabajo.
+
+## REPOSITORIO Y COMUNIDAD
+- Repositorio oficial en GitHub:
+  https://github.com/dylanneymarmontalvo2014-lgtm/DylanOS
+- Rama principal de desarrollo: development.
+- Sitio web oficial del proyecto: este sitio (DylanOS-Website).
+- La comunidad crece: cada actualización, idea y contribución
+  ayuda a construir algo más grande. "Esto apenas comienza."
+
+## DESCARGAS
+- Estado actual: "Próximamente disponible." DylanOS aún no tiene
+  una ISO pública; las descargas se habilitarán en el futuro.
+- Se recomienda seguir el repositorio de GitHub para novedades.
+
+## ESTRUCTURA DEL PROYECTO (repositorio DylanOS)
+- branding/, packages/, themes/, configs/, installer/, scripts/,
+  apps/ y .github/ — modularidad como principio: branding,
+  configuración y aplicaciones se mantienen separados.
+
+## DATOS DEL SITIO
+- Autor del proyecto: Ing.Dylan (desarrollador full-stack,
+  estudiante de ingeniería de software).
+- Año: © 2026 DylanOS. Proyecto independiente.
+=====================================================================
