@@ -4,8 +4,6 @@ const fs = require('fs');
 const path = require('path');
 
 const PORT = process.env.PORT || 5502;
-const GITHUB_OWNER = 'dylanneymarmontalvo2014-lgtm';
-const GITHUB_REPOSITORY = 'DylanOS-Website';
 const GITHUB_CACHE_TTL = 60 * 1000;
 let githubCache = null;
 
@@ -42,6 +40,12 @@ function loadEnvFile(filePath) {
 }
 
 loadEnvFile(path.join(ASSISTANT_DIR, '.env'));
+
+/* Conectores del repo a medir (sobrescribibles por entorno o .env):
+   GITHUB_OWNER, GITHUB_REPO, GITHUB_TOKEN — ver .env.example.
+   Se leen después de loadEnvFile para que el .env tenga efecto. */
+const GITHUB_OWNER = process.env.GITHUB_OWNER || 'dylanneymarmontalvo2014-lgtm';
+const GITHUB_REPOSITORY = process.env.GITHUB_REPO || 'DylanOS';
 
 function readAssistantFile(name) {
   try {
@@ -236,7 +240,10 @@ function githubRequest(endpoint) {
       response.on('data', chunk => { body += chunk; });
       response.on('end', () => {
         if (response.statusCode < 200 || response.statusCode >= 300) {
-          reject(new Error(`GitHub API respondió ${response.statusCode}`));
+          reject(Object.assign(
+            new Error(`GitHub API respondió ${response.statusCode}`),
+            { statusCode: response.statusCode }
+          ));
           return;
         }
         try {
@@ -248,6 +255,19 @@ function githubRequest(endpoint) {
     });
     request.on('error', reject);
     request.end();
+  });
+}
+
+/* /stats/contributors devuelve commits reales por colaborador (rama por defecto).
+   GitHub responde 202 mientras calcula: se devuelve null y el llamante usa el
+   método de paginación como respaldo. */
+function getContributorStats(repositoryPath) {
+  return githubRequest(`${repositoryPath}/stats/contributors`).then(result => {
+    const stats = result.data;
+    return Array.isArray(stats) && stats.length > 0 ? stats : null;
+  }).catch(error => {
+    if (error.statusCode === 202) return null;
+    throw error;
   });
 }
 
@@ -266,16 +286,32 @@ async function getGithubStats() {
   }
 
   const repositoryPath = `/repos/${GITHUB_OWNER}/${GITHUB_REPOSITORY}`;
-  const [repository, commits, contributors, releases] = await Promise.all([
+  const [repository, releases, contributorStats] = await Promise.all([
     githubRequest(repositoryPath),
-    githubRequest(`${repositoryPath}/commits?per_page=1`),
-    githubRequest(`${repositoryPath}/contributors?per_page=1&anon=true`),
-    githubRequest(`${repositoryPath}/releases?per_page=1`)
+    githubRequest(`${repositoryPath}/releases?per_page=1`),
+    getContributorStats(repositoryPath)
   ]);
+
+  let commits;
+  let contributors;
+  if (contributorStats) {
+    // Cifras reales: suma de commits y número de autores
+    commits = contributorStats.reduce((total, entry) => total + entry.total, 0);
+    contributors = contributorStats.length;
+  } else {
+    // Respaldo por paginación mientras GitHub calcula las estadísticas (202)
+    const [commitsPage, contributorsPage] = await Promise.all([
+      githubRequest(`${repositoryPath}/commits?per_page=1`),
+      githubRequest(`${repositoryPath}/contributors?per_page=1&anon=true`)
+    ]);
+    commits = getCollectionCount(commitsPage);
+    contributors = getCollectionCount(contributorsPage);
+  }
+
   const data = {
-    commits: getCollectionCount(commits),
+    commits,
     stars: repository.data.stargazers_count,
-    contributors: getCollectionCount(contributors),
+    contributors,
     releases: getCollectionCount(releases)
   };
   githubCache = { data, timestamp: Date.now() };
