@@ -3,7 +3,7 @@
 const assert = require('node:assert/strict');
 const { mkdirSync } = require('node:fs');
 const { execFileSync } = require('node:child_process');
-const { chromium } = require('playwright');
+const { chromium } = require('playwright-core');
 
 const BASE = 'http://127.0.0.1:5511';
 const OUTPUT = '/tmp/dylanos-release-ui';
