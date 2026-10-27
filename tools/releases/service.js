@@ -30,22 +30,26 @@ function parseArgs(argv) {
 }
 
 function productionDependencies(env = process.env) {
-  const sourceforge = sourceForgeConfigFromEnv(env);
   const db = configFromEnv(env);
+  let sourceforge;
+  const sourceForge = () => {
+    if (!sourceforge) sourceforge = sourceForgeConfigFromEnv(env);
+    return sourceforge;
+  };
   return {
     randomId: () => crypto.randomUUID(),
     upload: input => uploadFileWithRsync({
-      config: sourceforge,
+      config: sourceForge(),
       filePath: input.file,
       path: input.path,
       onProgress: input.onProgress
     }),
     verify: input => verifyPublicFile({
-      config: sourceforge,
+      config: sourceForge(),
       path: input.path,
       expectedSize: input.expectedSize
     }),
-    deleteObject: path => deleteRemoteFile({ config: sourceforge, path }),
+    deleteObject: path => deleteRemoteFile({ config: sourceForge(), path }),
     findReferences: path => request(db, `/rest/v1/releases?select=id&storage_provider=eq.sourceforge&file_path=eq.${encodeURIComponent(path)}&limit=1`),
     insertDraft: async row => {
       const data = await request(db, '/rest/v1/releases', { method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify(row) });
@@ -56,6 +60,14 @@ function productionDependencies(env = process.env) {
     deleteRelease: id => request(db, '/rest/v1/rpc/release_delete', { method: 'POST', body: JSON.stringify({ p_release_id: id }) }),
     request: (path, options) => request(db, path, options)
   };
+}
+
+function orphanError(cause, path) {
+  const error = new Error(`${cause.message}. Archivo huérfano: ${path}. Recupera con: npm run releases:cleanup -- --key "${path}" --yes`);
+  error.cause = cause;
+  error.orphanKey = path;
+  error.orphanPath = path;
+  return error;
 }
 
 async function publishRelease(options, dependencies) {
@@ -69,7 +81,9 @@ async function publishRelease(options, dependencies) {
   const deps = dependencies || productionDependencies();
   const path = buildSourceForgePath({ channel: input.channel, version: input.version, filename: fileName, uploadId: deps.randomId() });
   await deps.upload({ file: options.file, path, size: integrity.size, sha256: integrity.sha256, onProgress: options.onUploadProgress });
-  const remote = await deps.verify({ path, expectedSize: integrity.size });
+  let remote;
+  try { remote = await deps.verify({ path, expectedSize: integrity.size }); }
+  catch (cause) { throw orphanError(cause, path); }
   const row = {
     channel: input.channel, version: input.version, name: input.name,
     description: options.description || null, changelog: options.changelog || null,
@@ -78,10 +92,7 @@ async function publishRelease(options, dependencies) {
   };
   let release;
   try { release = await deps.insertDraft(row); }
-  catch (cause) {
-    const error = new Error(`${cause.message}. Archivo huérfano: ${path}. Recupera con: npm run releases:cleanup -- --key "${path}" --yes`);
-    error.cause = cause; error.orphanKey = path; error.orphanPath = path; throw error;
-  }
+  catch (cause) { throw orphanError(cause, path); }
   if (options.publish) release = await deps.publish(release.id);
   return { release, path, key: path, url: remote.url, sha256: integrity.sha256, size: integrity.size };
 }

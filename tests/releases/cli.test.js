@@ -5,7 +5,7 @@ const { join } = require('node:path');
 const { tmpdir } = require('node:os');
 const { spawnSync } = require('node:child_process');
 
-const { parseArgs, publishRelease, cleanupReleaseFile } = require('../../tools/releases/service');
+const { parseArgs, productionDependencies, publishRelease, cleanupReleaseFile } = require('../../tools/releases/service');
 
 test('CLI parser keeps command options and rejects missing option values', () => {
   assert.deepEqual(parseArgs(['publish', '--file', './a.iso', '--channel', 'beta', '--publish']), {
@@ -14,6 +14,15 @@ test('CLI parser keeps command options and rejects missing option values', () =>
   assert.throws(() => parseArgs(['publish', '--file']), /valor/i);
   assert.deepEqual(parseArgs(['--help']), { command: 'help' });
   assert.deepEqual(parseArgs(['publish', '--draft']), { command: 'publish', draft: true });
+});
+
+test('database-only commands do not require SourceForge credentials', async () => {
+  const deps = productionDependencies({
+    SUPABASE_URL: 'https://example.supabase.co',
+    SUPABASE_SERVICE_ROLE_KEY: 'service-role-test-value'
+  });
+  assert.equal(typeof deps.request, 'function');
+  assert.throws(() => deps.upload({ file: '/tmp/DylanOS.iso', path: 'beta/1.0/id/DylanOS.iso' }), /SourceForge/i);
 });
 
 test('publish workflow hashes, uploads, verifies, inserts, then promotes in order', async () => {
@@ -79,7 +88,12 @@ test('failed public mirror verification creates no database row', async () => {
     insertDraft: async () => { databaseCalls++; },
     publish: async () => { databaseCalls++; },
     randomId: () => 'mirror-id'
-  }), /verificar.*SourceForge/i);
+  }), error => {
+    assert.match(error.message, /verificar.*SourceForge/i);
+    assert.equal(error.orphanKey, 'beta/0.1.0-beta/mirror-id/DylanOS.iso');
+    assert.match(error.message, /releases:cleanup -- --key "beta\/0\.1\.0-beta\/mirror-id\/DylanOS\.iso" --yes/);
+    return true;
+  });
   assert.equal(databaseCalls, 0);
 });
 
