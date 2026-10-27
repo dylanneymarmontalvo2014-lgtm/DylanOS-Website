@@ -72,7 +72,7 @@ test('SourceForge public verification follows trusted redirects and checks exact
 });
 
 test('SourceForge public verification rejects unsafe redirects and unverifiable files', async () => {
-  const { verifyPublicFile, MAX_SOURCEFORGE_FILE_SIZE } = provider();
+  const { verifyPublicFile } = provider();
   async function rejects(response, expectedSize = 4096) {
     await assert.rejects(() => verifyPublicFile({
       config: { project: 'dylanos' }, path: 'beta/Dylan.iso', expectedSize, attempts: 1,
@@ -83,7 +83,7 @@ test('SourceForge public verification rejects unsafe redirects and unverifiable 
   await rejects(new Response(null, { status: 200, headers: { 'content-type': 'application/octet-stream' } }));
   await rejects(new Response(null, { status: 200, headers: { 'content-length': '12', 'content-type': 'text/html' } }));
   await rejects(new Response(null, { status: 200, headers: { 'content-length': '12', 'content-type': 'application/octet-stream' } }));
-  await rejects(new Response(null, { status: 200, headers: { 'content-length': String(MAX_SOURCEFORGE_FILE_SIZE + 1), 'content-type': 'application/octet-stream' } }), MAX_SOURCEFORGE_FILE_SIZE + 1);
+  await rejects(new Response(null, { status: 200, headers: { 'content-length': '10000000001', 'content-type': 'application/octet-stream' } }), 10_000_000_001);
 });
 
 test('SourceForge verification stops redirect loops', async () => {

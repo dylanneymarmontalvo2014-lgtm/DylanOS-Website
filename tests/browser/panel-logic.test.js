@@ -6,11 +6,11 @@ function isoFile(contents = 'iso bytes', name = 'DylanOS.iso', type = 'applicati
 }
 
 test('browser file validation rejects wrong extension, empty files, unsupported MIME and files over 10 GB', () => {
-  const { validateIsoFile, MAX_SOURCEFORGE_FILE_SIZE } = require('../../lib/releases/browser-file');
+  const { validateIsoFile } = require('../../lib/releases/browser-file');
   assert.throws(() => validateIsoFile(isoFile('x', 'bad.zip')), /\.iso/i);
   assert.throws(() => validateIsoFile(isoFile('', 'empty.iso')), /vacío/i);
   assert.throws(() => validateIsoFile(isoFile('x', 'bad.iso', 'text/plain')), /tipo/i);
-  assert.throws(() => validateIsoFile({ name: 'huge.iso', type: 'application/octet-stream', size: MAX_SOURCEFORGE_FILE_SIZE + 1 }), /10 GB/i);
+  assert.throws(() => validateIsoFile({ name: 'huge.iso', type: 'application/octet-stream', size: 10_000_000_001 }), /10 GB/i);
   assert.equal(validateIsoFile(isoFile()).name, 'DylanOS.iso');
 });
 

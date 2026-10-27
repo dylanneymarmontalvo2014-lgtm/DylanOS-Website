@@ -76,7 +76,7 @@ function createReleaseUploadHandler(dependencies = {}) {
       let checked;
       try {
         const config = sourceForgeConfigFromEnv(env, { requireCredentials: false });
-        checked = await verifyFile({ config, path, expectedSize });
+        checked = await verifyFile({ config, path, expectedSize, attempts: 1 });
       } catch (error) {
         if (/configuración SourceForge|Proyecto SourceForge/i.test(error && error.message || '')) {
           throw Object.assign(new Error('SourceForge no está configurado.'), { status: 503 });

@@ -119,7 +119,7 @@ node --test tests/integration/supabase-releases.test.js
 
 Antes de publicarla:
 
-1. `stat -c '%s %n' ./dist/DylanOS-Crimson.iso` confirma archivo no vacío y tamaño menor de 10 GiB.
+1. `stat -c '%s %n' ./dist/DylanOS-Crimson.iso` confirma archivo no vacío y tamaño máximo de 10.000.000.000 bytes.
 2. `sha256sum ./dist/DylanOS-Crimson.iso` se guarda fuera del archivo y se compara con el calculado por panel/CLI.
 3. El nombre termina en `.iso` y la ruta destino usa solo ASCII permitido.
 4. Existe al menos una copia local/verificada; SourceForge no restaura archivos individuales.

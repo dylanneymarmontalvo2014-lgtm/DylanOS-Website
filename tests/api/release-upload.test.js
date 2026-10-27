@@ -74,6 +74,7 @@ test('administrator can verify one safe SourceForge path without exposing provid
     ok: true, path: 'beta/1/a.iso', url: 'https://sourceforge.net/projects/dylanos/files/beta/1/a.iso/download', size: 4096
   });
   assert.equal(received.expectedSize, 4096);
+  assert.equal(received.attempts, 1);
   assert.equal(JSON.stringify(res.body).includes('SOURCEFORGE_USERNAME'), false);
 });
 
