@@ -11,7 +11,8 @@ const {
   uploadFileWithRsync,
   verifyPublicFile,
   deleteRemoteFile,
-  validateSourceForgePath
+  validateSourceForgePath,
+  MAX_SOURCEFORGE_FILE_SIZE
 } = require('../../lib/releases/sourceforge');
 const { configFromEnv, request } = require('../../lib/releases/supabase-admin');
 
@@ -70,11 +71,19 @@ function orphanError(cause, path) {
   return error;
 }
 
+function validateIsoFileSize(size) {
+  const value = Number(size);
+  if (!Number.isSafeInteger(value) || value <= 0) throw new Error('La ISO no existe o está vacía.');
+  if (value > MAX_SOURCEFORGE_FILE_SIZE) throw new Error('La ISO supera el límite de 10 GB de SourceForge.');
+  return value;
+}
+
 async function publishRelease(options, dependencies) {
   const input = validateReleaseInput(options);
   if (!options.file) throw new Error('Falta --file.');
   const fileInfo = await stat(options.file);
-  if (!fileInfo.isFile() || fileInfo.size <= 0) throw new Error('La ISO no existe o está vacía.');
+  if (!fileInfo.isFile()) throw new Error('La ISO no existe o está vacía.');
+  validateIsoFileSize(fileInfo.size);
   const fileName = safeIsoName(basename(options.file));
   const integrity = await sha256File(options.file, options.onHashProgress);
   if (input.sha256 && input.sha256 !== integrity.sha256) throw new Error('El SHA-256 calculado no coincide con --sha256.');
@@ -104,4 +113,4 @@ async function cleanupReleaseFile(path, dependencies) {
   return dependencies.deleteObject(safePath);
 }
 
-module.exports = { parseArgs, productionDependencies, publishRelease, cleanupReleaseFile };
+module.exports = { parseArgs, productionDependencies, validateIsoFileSize, publishRelease, cleanupReleaseFile };

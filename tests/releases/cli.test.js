@@ -5,7 +5,7 @@ const { join } = require('node:path');
 const { tmpdir } = require('node:os');
 const { spawnSync } = require('node:child_process');
 
-const { parseArgs, productionDependencies, publishRelease, cleanupReleaseFile } = require('../../tools/releases/service');
+const { parseArgs, productionDependencies, validateIsoFileSize, publishRelease, cleanupReleaseFile } = require('../../tools/releases/service');
 
 test('CLI parser keeps command options and rejects missing option values', () => {
   assert.deepEqual(parseArgs(['publish', '--file', './a.iso', '--channel', 'beta', '--publish']), {
@@ -23,6 +23,11 @@ test('database-only commands do not require SourceForge credentials', async () =
   });
   assert.equal(typeof deps.request, 'function');
   assert.throws(() => deps.upload({ file: '/tmp/DylanOS.iso', path: 'beta/1.0/id/DylanOS.iso' }), /SourceForge/i);
+});
+
+test('CLI rejects an ISO over the SourceForge mirror limit before upload', () => {
+  assert.equal(validateIsoFileSize(3_400_000_000), 3_400_000_000);
+  assert.throws(() => validateIsoFileSize(10_000_000_001), /10 GB/i);
 });
 
 test('publish workflow hashes, uploads, verifies, inserts, then promotes in order', async () => {
