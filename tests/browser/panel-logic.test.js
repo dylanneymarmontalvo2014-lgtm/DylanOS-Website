@@ -60,3 +60,18 @@ test('changing the selected file invalidates a prior verification', () => {
   assert.equal(isVerificationCurrent(verification, isoFile('abc'), 'beta/1/DylanOS.iso'), false);
   assert.equal(isVerificationCurrent(verification, file, 'beta/2/DylanOS.iso'), false);
 });
+
+test('legacy public files are checked with HEAD and exact size', async () => {
+  const { probePublicFile } = require('../../lib/releases/browser-file');
+  const seen = [];
+  const ok = await probePublicFile('https://downloads.example/DylanOS.iso', 4096, async (url, options) => {
+    seen.push({ url, options });
+    return new Response(null, { status: 200, headers: { 'content-length': '4096' } });
+  });
+  assert.deepEqual(ok, { ok: true, status: 200, size: 4096 });
+  assert.equal(seen[0].options.method, 'HEAD');
+  const mismatch = await probePublicFile('https://downloads.example/DylanOS.iso', 4096, async () => (
+    new Response(null, { status: 200, headers: { 'content-length': '12' } })
+  ));
+  assert.equal(mismatch.ok, false);
+});

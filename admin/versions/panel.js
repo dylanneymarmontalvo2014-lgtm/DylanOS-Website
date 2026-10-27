@@ -341,16 +341,9 @@
         return { ok: false, status: err.message };
       });
     }
-    if (row.storage_provider !== 'r2') {
-      var url = downloadUrl(row);
-      if (!url) return Promise.resolve({ ok: false });
-      return fetch(url, { method: 'HEAD' }).then(function (r) {
-        return { ok: r.ok, status: r.status, size: Number(r.headers.get('content-length')) };
-      }).catch(function () { return { ok: false }; });
-    }
-    return storageApi({ action: 'head', key: row.file_path }).catch(function (err) {
-      return { ok: false, status: err.message };
-    });
+    var url = downloadUrl(row);
+    if (!url) return Promise.resolve({ ok: false });
+    return DylanBrowserFile.probePublicFile(url, Number(row.file_size));
   }
 
   /* ------------------------- modales genéricos ----------------------- */
