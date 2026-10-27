@@ -6,3 +6,12 @@
 *.log
 .DS_Store
 node_modules/
+.vercel
+.env*
+!.env.example
+!**/.env.example
+supabase/.temp/
+.releases-state/
+
+# Credenciales de uso local (tocens) — eliminar si aún existe
+tocens.txt

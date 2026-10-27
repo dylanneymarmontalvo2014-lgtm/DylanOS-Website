@@ -2,6 +2,9 @@ const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
+const releaseUploadHandler = require('./api/release-upload');
+const { publicConfig } = require('./api/public-config');
+const { requestFile } = require('./lib/static-path');
 
 const PORT = process.env.PORT || 5502;
 const GITHUB_CACHE_TTL = 60 * 1000;
@@ -40,6 +43,7 @@ function loadEnvFile(filePath) {
 }
 
 loadEnvFile(path.join(ASSISTANT_DIR, '.env'));
+loadEnvFile(path.join(__dirname, '.env.local'));
 
 /* Conectores del repo a medir (sobrescribibles por entorno o .env):
    GITHUB_OWNER, GITHUB_REPO, GITHUB_TOKEN — ver .env.example.
@@ -329,6 +333,14 @@ function sendGithubStats(res) {
   });
 }
 
+function sendPublicConfig(res) {
+  res.writeHead(200, {
+    'Content-Type': 'application/json',
+    'Cache-Control': 'public, max-age=300'
+  });
+  res.end(JSON.stringify(publicConfig()));
+}
+
 // Extensiones estáticas que deben servirse directamente
 const staticExtensions = ['.js', '.css', '.png', '.webp', '.jpg', '.ico', '.svg', '.woff', '.woff2'];
 
@@ -337,6 +349,16 @@ const server = http.createServer((req, res) => {
 
   if (pathname === '/api/github-stats') {
     sendGithubStats(res);
+    return;
+  }
+
+  if (pathname === '/api/public-config') {
+    sendPublicConfig(res);
+    return;
+  }
+
+  if (pathname === '/api/release-upload') {
+    releaseUploadHandler(req, res);
     return;
   }
 
@@ -353,7 +375,13 @@ const server = http.createServer((req, res) => {
   // Resolución segura de rutas estáticas: normaliza, impide salir del
   // directorio raíz y bloquea archivos ocultos (.env, .git) y todo lo
   // que esté en "asistente ai/" fuera de su subcarpeta pública widget/.
-  const requestedPath = pathname === '/' ? 'index.html' : pathname.replace(/^\/+/, '');
+  let requestedPath;
+  try { requestedPath = requestFile(pathname); }
+  catch {
+    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('404 Not Found');
+    return;
+  }
   const filePath = path.normalize(path.join(__dirname, requestedPath));
   const isInsideRoot = filePath.startsWith(__dirname + path.sep);
   const hasHiddenSegment = requestedPath.split('/').some(segment => segment.startsWith('.'));
