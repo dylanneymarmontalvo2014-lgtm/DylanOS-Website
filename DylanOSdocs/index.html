@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050505">
+  <meta name="description" content="DylanOSdocs: documentación oficial de DylanOS Crimson, sincronizada con GitHub Wiki.">
+  <title>DylanOSdocs · Documentación oficial</title>
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="dylanosdocs.css">
+</head>
+<body>
+  <a class="skip-link" href="#docs-main">Saltar al contenido</a>
+
+  <header class="docs-header">
+    <a class="docs-brand" href="#/Home" aria-label="DylanOSdocs, inicio">
+      <img src="../images/8357dd421_Screenshot_1-removebg-preview.webp" alt="" width="34" height="34">
+      <span class="docs-brand__name">DylanOS<span>docs</span></span>
+    </a>
+
+    <div class="docs-search-wrap">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+      <input id="docs-search" type="search" autocomplete="off" aria-label="Buscar en DylanOSdocs" aria-controls="search-results" placeholder="Buscar en la documentación">
+      <kbd>/</kbd>
+      <div id="search-results" class="search-results" role="listbox" aria-label="Resultados de búsqueda" hidden></div>
+    </div>
+
+    <nav class="docs-header__actions" aria-label="Enlaces del proyecto">
+      <a href="/">Web principal</a>
+      <a href="https://github.com/dylanneymarmontalvo2014-lgtm/DylanOS/wiki" target="_blank" rel="noopener noreferrer">GitHub Wiki</a>
+    </nav>
+
+    <button id="nav-toggle" class="nav-toggle" type="button" aria-label="Abrir capítulos" aria-expanded="false" aria-controls="docs-sidebar">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <div class="docs-shell">
+    <aside id="docs-sidebar" class="docs-sidebar">
+      <div class="docs-sidebar__intro">
+        <span>Documentación oficial</span>
+        <strong>DylanOS Crimson</strong>
+        <p>Guías, aplicaciones, soporte y desarrollo.</p>
+      </div>
+      <nav id="chapter-nav" aria-label="Capítulos de DylanOSdocs">
+        <div class="nav-skeleton" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      </nav>
+      <div class="docs-sidebar__source">
+        <span class="sync-dot" aria-hidden="true"></span>
+        <span>Fuente: GitHub Wiki</span>
+      </div>
+    </aside>
+
+    <main id="docs-main" class="docs-main" tabindex="-1">
+      <div class="article-toolbar">
+        <nav id="breadcrumbs" aria-label="Migas de pan">
+          <a href="#/Home">DylanOSdocs</a><span>/</span><span>Inicio</span>
+        </nav>
+        <a id="source-link" class="source-link" href="https://github.com/dylanneymarmontalvo2014-lgtm/DylanOS/wiki" target="_blank" rel="noopener noreferrer">Ver fuente</a>
+      </div>
+
+      <article id="wiki-article" class="wiki-article" aria-live="polite" aria-busy="true">
+        <div class="article-skeleton" aria-label="Cargando documentación">
+          <i class="article-skeleton__hero"></i><i></i><i></i><i></i><i></i>
+        </div>
+      </article>
+
+      <footer class="article-footer">
+        <div>
+          <strong>DylanOSdocs</strong>
+          <span id="sync-status">Conectando con la Wiki…</span>
+        </div>
+        <a href="https://github.com/dylanneymarmontalvo2014-lgtm/DylanOS/issues" target="_blank" rel="noopener noreferrer">Reportar un problema</a>
+      </footer>
+    </main>
+
+    <aside class="docs-toc" aria-label="En esta página">
+      <span>En esta página</span>
+      <nav id="table-of-contents"><p>Cargando contenido…</p></nav>
+    </aside>
+  </div>
+
+  <button id="nav-backdrop" class="nav-backdrop" type="button" aria-label="Cerrar capítulos" hidden></button>
+  <div id="docs-announcer" class="sr-only" aria-live="polite"></div>
+
+  <script src="wiki-core.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
