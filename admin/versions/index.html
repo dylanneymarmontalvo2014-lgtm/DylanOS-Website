@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="../../favicon.ico" type="image/x-icon">
+  <title>DylanOS · Versiones — Panel</title>
+  <link href="admin.css" rel="stylesheet">
+  <script src="../../vendor/supabase.js" defer></script>
+  <script src="../../lib/releases/sha256.js" defer></script>
+  <script src="../../lib/releases/browser-file.js" defer></script>
+  <script src="panel.js" defer></script>
+</head>
+<body class="admin-page">
+  <!-- =============== Vista: sistema no configurado =============== -->
+  <section id="view-unconfigured" class="admin-login-wrap" hidden>
+    <div class="admin-login-card">
+      <a class="brand"><img class="brand-img" src="../../images/8357dd421_Screenshot_1-removebg-preview.webp" alt="DylanOS"><span>Dylan <span class="brand-os">OS</span></span></a>
+      <p class="admin-login-sub">El panel de versiones todavía no está configurado en este entorno.<br>Revisa <b>docs/version-system-setup.md</b>.</p>
+    </div>
+  </section>
+
+  <!-- =============== Vista: inicio de sesión =============== -->
+  <section id="view-login" class="admin-login-wrap" hidden>
+    <div class="admin-login-card">
+      <a class="brand"><img class="brand-img" src="../../images/8357dd421_Screenshot_1-removebg-preview.webp" alt="DylanOS"><span>Dylan <span class="brand-os">OS</span></span></a>
+      <p class="admin-login-sub">Panel privado de versiones.<br>Inicia sesión con tu cuenta de administrador.</p>
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="login-email">Correo</label>
+          <input id="login-email" class="input" type="email" autocomplete="username" required placeholder="tu@correo.com">
+        </div>
+        <div class="field">
+          <label for="login-password">Contraseña</label>
+          <input id="login-password" class="input" type="password" autocomplete="current-password" required placeholder="••••••••">
+        </div>
+        <button class="btn btn-primary" type="submit" id="login-btn">Iniciar sesión</button>
+        <div id="login-error" class="field-error admin-login-error" aria-live="polite"></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- =============== Vista: sin autorización =============== -->
+  <section id="view-forbidden" class="admin-login-wrap" hidden>
+    <div class="admin-login-card">
+      <a class="brand"><img class="brand-img" src="../../images/8357dd421_Screenshot_1-removebg-preview.webp" alt="DylanOS"><span>Dylan <span class="brand-os">OS</span></span></a>
+      <p class="admin-login-sub">Tu sesión está activa (<span id="forbidden-email"></span>), pero la cuenta no aparece en la lista de administradores autorizados de DylanOS.</p>
+      <button class="btn btn-ghost" id="forbidden-logout" type="button">Cerrar sesión</button>
+    </div>
+  </section>
+
+  <!-- =============== Vista: panel =============== -->
+  <div id="view-panel" hidden>
+    <header class="admin-top">
+      <div class="admin-shell" style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+        <a class="brand" href="../">
+          <img class="brand-img" src="../../images/8357dd421_Screenshot_1-removebg-preview.webp" alt="DylanOS"><span>Dylan <span class="brand-os">OS</span></span>
+          <span class="admin-tag">Versiones</span>
+        </a>
+        <div class="admin-user">
+          <span id="panel-user-email" title=""></span>
+          <button id="logout-btn" class="admin-logout" type="button">Salir</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="admin-shell admin-mid">
+      <div class="admin-title">
+        <div>
+          <h1>Versiones · DylanOS Crimson</h1>
+          <p class="admin-sub">Canales pre-beta · beta · estable — publicación, borradores, historial y archivos.</p>
+        </div>
+        <button class="btn btn-primary" id="new-release-btn" type="button">Nueva versión</button>
+      </div>
+
+      <div class="admin-stats" id="admin-stats" aria-live="polite"></div>
+
+      <div class="admin-toolbar">
+        <div class="admin-search">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="search-input" type="search" placeholder="Buscar por versión o nombre…" aria-label="Buscar versiones">
+        </div>
+        <select id="filter-channel" class="admin-select" aria-label="Filtrar por canal">
+          <option value="">Todos los canales</option>
+          <option value="pre-beta">Pre-beta</option>
+          <option value="beta">Beta</option>
+          <option value="stable">Estable</option>
+        </select>
+        <select id="filter-status" class="admin-select" aria-label="Filtrar por estado">
+          <option value="">Todos los estados</option>
+          <option value="published">Publicadas</option>
+          <option value="draft">Borradores</option>
+          <option value="retired">Historial / retiradas</option>
+        </select>
+      </div>
+
+      <div id="admin-alert" aria-live="polite"></div>
+
+      <div class="admin-table-card">
+        <div class="admin-table-wrap">
+          <table class="admin-table" aria-label="Versiones publicadas y borradores">
+            <thead>
+              <tr>
+                <th>Versión</th><th>Nombre</th><th>Canal</th><th>Estado</th>
+                <th>Arq.</th><th>Tamaño</th><th>Publicada</th><th style="text-align:right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="releases-tbody"></tbody>
+          </table>
+          <div id="table-empty" class="admin-empty" hidden>No hay versiones todavía. Pulsa <b>Nueva versión</b> para publicar la primera ISO.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============== Modal: crear / editar versión =============== -->
+  <div id="release-modal" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="release-modal-title">
+      <h2 id="release-modal-title">Nueva versión</h2>
+      <p class="modal-sub" id="release-modal-sub">Valida la ISO localmente, súbela en SourceForge y registra su ruta verificada.</p>
+
+      <form id="release-form" class="admin-form-grid" novalidate>
+        <div class="field">
+          <label>1. ISO local para integridad <span class="req">*</span></label>
+          <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Seleccionar archivo .iso">
+            <span class="dropzone-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+            </span>
+            <div class="dropzone-title">Arrastra tu ISO o haz clic para calcular su SHA-256</div>
+            <div class="dropzone-sub">La ISO no se envía a DylanOS ni a Vercel.</div>
+            <div class="dropzone-file" id="dropzone-file" hidden></div>
+            <div class="dropzone-warning" id="dropzone-warning" hidden></div>
+          </div>
+          <input id="file-input" type="file" accept=".iso" hidden>
+        </div>
+
+        <div class="sourceforge-step" aria-labelledby="sourceforge-step-title">
+          <div>
+            <h3 id="sourceforge-step-title">2. Carga externa en SourceForge</h3>
+            <p>Abre el gestor oficial, crea la carpeta indicada y sube la ISO allí. SourceForge mostrará el progreso real y permitirá reintentar.</p>
+          </div>
+          <a id="sourceforge-file-manager" class="btn btn-ghost" href="#" target="_blank" rel="noopener noreferrer">Abrir File Manager</a>
+          <div class="field">
+            <label for="rel-file-path">Ruta relativa publicada <span class="req">*</span></label>
+            <input id="rel-file-path" class="input" maxlength="300" spellcheck="false" placeholder="pre-beta/0.3.0-prebeta/id/DylanOS-Crimson.iso">
+            <span class="hint">Debe coincidir exactamente con las carpetas y el archivo de SourceForge.</span>
+          </div>
+          <div class="sourceforge-verify-row">
+            <button id="verify-file-btn" type="button" class="icon-btn icon-btn--accent">Verificar archivo público</button>
+            <span id="file-verification-state" class="hint" role="status" aria-live="polite">Pendiente de verificación.</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="rel-name">Nombre de la versión <span class="req">*</span></label>
+          <input id="rel-name" class="input" required maxlength="120" placeholder="DylanOS Crimson 0.3.0">
+          <span class="hint">Se muestra como título principal en la web.</span>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="rel-version">Número de versión <span class="req">*</span></label>
+            <input id="rel-version" class="input" required placeholder="0.3.0-prebeta" maxlength="64">
+            <span class="hint" id="version-hint">Se autocompleta a partir del nombre si es posible.</span>
+          </div>
+          <div class="field">
+            <label for="rel-channel">Canal <span class="req">*</span></label>
+            <select id="rel-channel" class="admin-select" required style="width:100%">
+              <option value="pre-beta">Pre-beta</option>
+              <option value="beta">Beta</option>
+              <option value="stable">Estable</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="rel-arch">Arquitectura</label>
+            <select id="rel-arch" class="admin-select" style="width:100%">
+              <option value="x86_64">x86_64 (64 bits)</option>
+              <option value="aarch64">aarch64 (ARM64)</option>
+              <option value="any">Cualquiera</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="rel-sha256">SHA-256 esperado (opcional)</label>
+            <input id="rel-sha256" class="input" placeholder="64 caracteres hexadecimales" maxlength="64" spellcheck="false">
+            <span class="hint">Se calcula por bloques en el navegador. Si introduces uno, debe coincidir antes de subir.</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="rel-description">Descripción breve</label>
+          <input id="rel-description" class="input" maxlength="300" placeholder="Resumen de una línea para la tarjeta">
+        </div>
+        <div class="field">
+          <label for="rel-changelog">Notas de la versión / changelog</label>
+          <textarea id="rel-changelog" class="textarea" maxlength="8000" placeholder="Novedades, correcciones y cambios notables…"></textarea>
+        </div>
+
+        <div id="upload-progress" class="upload-progress">
+          <div class="upload-progress-top"><span id="upload-label">Calculando SHA-256…</span><span id="upload-percent">0%</span></div>
+          <div class="upload-progress-track"><div id="upload-bar" class="upload-progress-bar"></div></div>
+          <div class="upload-hint" id="upload-hint">Progreso local real; todavía no se está subiendo ningún archivo.</div>
+        </div>
+
+        <div id="form-error" class="field-error" aria-live="polite"></div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" data-close>Cancelar</button>
+          <button type="submit" class="btn btn-ghost" id="save-draft-btn">Guardar borrador</button>
+          <button type="submit" class="btn btn-primary" id="publish-btn">Guardar y publicar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =============== Modal: confirmación de publicar =============== -->
+  <div id="confirm-publish" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+      <h2 id="confirm-title">Confirmar publicación</h2>
+      <p class="modal-sub" id="confirm-sub"></p>
+      <div class="publish-summary" id="confirm-summary"></div>
+      <p class="modal-sub" style="margin-top:14px">La versión anterior del canal pasará automáticamente al historial; su archivo se conserva intacto.</p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" data-close type="button">Volver</button>
+        <button class="btn btn-primary" id="confirm-accept" type="button">Publicar ahora</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============== Modal: confirmación destructiva =============== -->
+  <div id="confirm-danger" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="danger-title">
+      <h2 id="danger-title">Confirmar acción</h2>
+      <p class="modal-sub" id="danger-sub"></p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" data-close type="button">Cancelar</button>
+        <button class="btn btn-primary icon-btn--danger" id="danger-accept" type="button">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============== Modal: editar metadatos =============== -->
+  <div id="edit-modal" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="edit-title">
+      <h2 id="edit-title">Editar metadatos</h2>
+      <p class="modal-sub" id="edit-sub">El archivo no se modifica: solo nombre, versión, descripción y notas.</p>
+      <form id="edit-form" class="admin-form-grid">
+        <div class="field"><label>Nombre</label><input id="edit-name" class="input" required maxlength="120"></div>
+        <div class="field-row">
+          <div class="field"><label>Versión</label><input id="edit-version" class="input" required maxlength="64"></div>
+          <div class="field"><label>Arquitectura</label>
+            <select id="edit-arch" class="admin-select" style="width:100%">
+              <option value="x86_64">x86_64</option><option value="aarch64">aarch64</option><option value="any">Cualquiera</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label>SHA-256</label><input id="edit-sha256" class="input" maxlength="64" spellcheck="false" placeholder="64 caracteres hexadecimales"></div>
+        <div class="field"><label>Descripción</label><input id="edit-description" class="input" maxlength="300"></div>
+        <div class="field"><label>Notas</label><textarea id="edit-changelog" class="textarea" maxlength="8000"></textarea></div>
+        <div id="edit-error" class="field-error" aria-live="polite"></div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" data-close>Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="busy-overlay" class="modal-overlay" hidden>
+    <div class="modal" style="max-width:320px;text-align:center">
+      <div class="spinner" style="margin:6px auto 14px;width:22px;height:22px;border-color:rgba(255,43,43,0.3);border-top-color:var(--d-red)"></div>
+      <p id="busy-text" style="margin:0;font-size:14px;color:var(--d-text-2)">Trabajando…</p>
+    </div>
+  </div>
+</body>
+</html>

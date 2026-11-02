@@ -2,6 +2,8 @@ const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
+const releaseUploadHandler = require('./api/release-upload');
+const { publicConfig } = require('./api/public-config');
 
 const PORT = process.env.PORT || 5502;
 const GITHUB_OWNER = 'dylanneymarmontalvo2014-lgtm';
@@ -42,6 +44,7 @@ function loadEnvFile(filePath) {
 }
 
 loadEnvFile(path.join(ASSISTANT_DIR, '.env'));
+loadEnvFile(path.join(__dirname, '.env.local'));
 
 function readAssistantFile(name) {
   try {
@@ -308,6 +311,21 @@ function handleRequest(req, res) {
 
   if (pathname === '/api/github-stats') {
     sendGithubStats(res);
+    return;
+  }
+
+  if (pathname === '/api/public-config') {
+    res.writeHead(200, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Access-Control-Allow-Origin': '*',
+      'Cache-Control': 'public, max-age=300'
+    });
+    res.end(JSON.stringify(publicConfig()));
+    return;
+  }
+
+  if (pathname === '/api/release-upload') {
+    releaseUploadHandler(req, res);
     return;
   }
 
