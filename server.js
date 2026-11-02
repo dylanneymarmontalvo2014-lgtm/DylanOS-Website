@@ -324,7 +324,12 @@ function handleRequest(req, res) {
   // Resolución segura de rutas estáticas: normaliza, impide salir del
   // directorio raíz y bloquea archivos ocultos (.env, .git) y todo lo
   // que esté en "asistente ai/" fuera de su subcarpeta pública widget/.
-  const requestedPath = pathname === '/' ? 'index.html' : pathname.replace(/^\/+/, '');
+  const relativePath = pathname.replace(/^\/+/, '');
+  const requestedPath = pathname === '/'
+    ? 'index.html'
+    : pathname.endsWith('/')
+      ? `${relativePath}index.html`
+      : relativePath;
   const filePath = path.normalize(path.join(__dirname, requestedPath));
   const isInsideRoot = filePath.startsWith(__dirname + path.sep);
   const hasHiddenSegment = requestedPath.split('/').some(segment => segment.startsWith('.'));
