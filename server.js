@@ -3,7 +3,6 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 const releaseUploadHandler = require('./api/release-upload');
-const formsHandler = require('./api/forms');
 const { publicConfig } = require('./api/public-config');
 
 const PORT = process.env.PORT || 5502;
@@ -327,11 +326,6 @@ function handleRequest(req, res) {
 
   if (pathname === '/api/release-upload') {
     releaseUploadHandler(req, res);
-    return;
-  }
-
-  if (pathname === '/api/forms' || pathname.startsWith('/api/forms/')) {
-    formsHandler(req, res);
     return;
   }
 
