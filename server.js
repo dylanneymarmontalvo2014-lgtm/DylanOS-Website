@@ -5,12 +5,9 @@ const path = require('path');
 const releaseUploadHandler = require('./api/release-upload');
 const formsHandler = require('./api/forms');
 const { publicConfig } = require('./api/public-config');
+const { getGithubStats } = require('./lib/github-stats');
 
 const PORT = process.env.PORT || 5502;
-const GITHUB_OWNER = 'dylanneymarmontalvo2014-lgtm';
-const GITHUB_REPOSITORY = 'DylanOS-Website';
-const GITHUB_CACHE_TTL = 60 * 1000;
-let githubCache = null;
 
 /* ========================= Asistente Ai DylanOS ========================= */
 const ASSISTANT_DIR = path.join(__dirname, 'asistente ai');
@@ -223,68 +220,6 @@ function sendAssistantReply(req, res) {
   });
 }
 /* ====================== Fin Asistente Ai DylanOS ====================== */
-
-function githubRequest(endpoint) {
-  return new Promise((resolve, reject) => {
-    const request = https.request({
-      hostname: 'api.github.com',
-      path: endpoint,
-      headers: {
-        Accept: 'application/vnd.github+json',
-        'User-Agent': 'DylanOS-Website',
-        ...(process.env.GITHUB_TOKEN ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` } : {})
-      }
-    }, response => {
-      let body = '';
-      response.setEncoding('utf8');
-      response.on('data', chunk => { body += chunk; });
-      response.on('end', () => {
-        if (response.statusCode < 200 || response.statusCode >= 300) {
-          reject(new Error(`GitHub API respondió ${response.statusCode}`));
-          return;
-        }
-        try {
-          resolve({ data: JSON.parse(body), headers: response.headers });
-        } catch (error) {
-          reject(error);
-        }
-      });
-    });
-    request.on('error', reject);
-    request.end();
-  });
-}
-
-function getLastPage(linkHeader) {
-  const lastPage = linkHeader && linkHeader.match(/[?&]page=(\d+)>; rel="last"/);
-  return lastPage ? Number(lastPage[1]) : 1;
-}
-
-function getCollectionCount(result) {
-  return result.data.length === 0 ? 0 : getLastPage(result.headers.link);
-}
-
-async function getGithubStats() {
-  if (githubCache && Date.now() - githubCache.timestamp < GITHUB_CACHE_TTL) {
-    return githubCache.data;
-  }
-
-  const repositoryPath = `/repos/${GITHUB_OWNER}/${GITHUB_REPOSITORY}`;
-  const [repository, commits, contributors, releases] = await Promise.all([
-    githubRequest(repositoryPath),
-    githubRequest(`${repositoryPath}/commits?per_page=1`),
-    githubRequest(`${repositoryPath}/contributors?per_page=1&anon=true`),
-    githubRequest(`${repositoryPath}/releases?per_page=1`)
-  ]);
-  const data = {
-    commits: getCollectionCount(commits),
-    stars: repository.data.stargazers_count,
-    contributors: getCollectionCount(contributors),
-    releases: getCollectionCount(releases)
-  };
-  githubCache = { data, timestamp: Date.now() };
-  return data;
-}
 
 function sendGithubStats(res) {
   getGithubStats().then(data => {

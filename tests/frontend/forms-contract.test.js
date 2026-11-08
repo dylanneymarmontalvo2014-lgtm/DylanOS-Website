@@ -22,4 +22,5 @@ test('the production community call-to-action redirects to DylanOSforms', () => 
   assert.match(html, /dylanosforms-link\.js/);
   assert.match(script, /DylanOSforms/);
   assert.match(script, /Formularios/);
+  assert.match(script, /data-repo-stat/);
 });
