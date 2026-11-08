@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DylanOSforms: crea formularios claros para tu comunidad.">
+  <title>DylanOSforms — Formularios que se sienten tuyos</title>
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="forms.css">
+  <script src="../vendor/supabase.js"></script>
+</head>
+<body>
+  <div class="forms-shell">
+    <header class="forms-topbar">
+      <a class="brand" href="../" aria-label="Volver a DylanOS">
+        <span class="brand-mark">D</span><span>Dylan<span class="brand-accent">OS</span><span class="brand-product">forms</span></span>
+      </a>
+      <div class="topbar-actions">
+        <a href="../" class="quiet-link">Volver a DylanOS</a>
+        <button id="sign-out" class="button button-quiet" type="button" hidden>Cerrar sesión</button>
+      </div>
+    </header>
+
+    <main id="forms-app">
+      <section id="config-error" class="state-panel" hidden>
+        <span class="state-kicker">DylanOSforms</span>
+        <h1>Falta conectar Supabase.</h1>
+        <p>Configura <code>SUPABASE_URL</code> y <code>SUPABASE_ANON_KEY</code> en el entorno del sitio para activar los formularios.</p>
+      </section>
+
+      <section id="auth-view" class="auth-layout" hidden>
+        <div class="auth-intro">
+          <span class="state-kicker">El taller de formularios</span>
+          <h1>Pregunta mejor.<br><em>Construye claro.</em></h1>
+          <p>Crea formularios con la identidad de DylanOS, compártelos con un enlace y recibe respuestas directamente en tu proyecto.</p>
+          <div class="signal-list"><span>Editor sencillo</span><span>Respuestas en Supabase</span><span>Enlaces públicos</span></div>
+        </div>
+        <form id="auth-form" class="auth-card">
+          <div class="card-heading"><span id="auth-kicker" class="state-kicker">Tu espacio</span><h2 id="auth-title">Entra a DylanOSforms</h2><p id="auth-copy">Usa tu correo para crear y administrar formularios.</p></div>
+          <label>Correo electrónico<input id="auth-email" type="email" autocomplete="email" required></label>
+          <label>Contraseña<input id="auth-password" type="password" autocomplete="current-password" minlength="6" required></label>
+          <button id="auth-submit" class="button button-primary" type="submit">Iniciar sesión</button>
+          <p id="auth-message" class="form-message" role="status"></p>
+          <button id="auth-toggle" class="text-button" type="button">¿Todavía no tienes cuenta? Regístrate</button>
+        </form>
+      </section>
+
+      <section id="builder-view" class="builder-layout" hidden>
+        <aside class="forms-sidebar">
+          <div class="sidebar-heading"><div><span class="state-kicker">Tu espacio</span><h1>Formularios</h1></div><button id="new-form" class="icon-button" type="button" aria-label="Crear formulario">+</button></div>
+          <p class="sidebar-note">Diseña preguntas, publica un enlace y deja que las respuestas lleguen a ti.</p>
+          <div id="forms-list" class="forms-list"></div>
+          <div class="sidebar-footer"><span id="session-email"></span><span class="live-dot">Supabase conectado</span></div>
+        </aside>
+
+        <div class="builder-main">
+          <div id="builder-empty" class="empty-builder"><span class="empty-glyph">✦</span><h2>Tu siguiente pregunta empieza aquí.</h2><p>Crea un formulario para recoger ideas, solicitudes o feedback de tu comunidad.</p><button id="empty-new-form" class="button button-primary" type="button">Crear mi primer formulario</button></div>
+          <div id="builder-editor" hidden>
+            <div class="editor-toolbar"><div><span id="editor-status" class="status-pill">Borrador</span><span id="editor-hint" class="toolbar-hint">Solo tú puedes editarlo.</span></div><div class="toolbar-actions"><button id="delete-form" class="button button-quiet danger" type="button">Eliminar</button><button id="save-form" class="button button-quiet" type="button">Guardar borrador</button><button id="publish-form" class="button button-primary" type="button">Publicar</button></div></div>
+            <div class="editor-grid">
+              <section class="editor-column">
+                <div class="editor-header"><label class="eyebrow">Título del formulario<input id="form-title" class="title-input" maxlength="120" placeholder="Encuesta de la comunidad"></label><label class="field-label">Descripción<textarea id="form-description" rows="3" maxlength="500" placeholder="Cuéntales para qué sirve este formulario."></textarea></label><label class="field-label">Slug público<input id="form-slug" maxlength="80" placeholder="encuesta-comunidad"><small>Se usará en el enlace público.</small></label></div>
+                <div class="field-builder-heading"><div><span class="eyebrow">Preguntas</span><h2>Construye el recorrido</h2></div><div class="add-field"><select id="new-field-type" aria-label="Tipo de campo"><option value="text">Texto corto</option><option value="textarea">Texto largo</option><option value="email">Correo</option><option value="number">Número</option><option value="select">Selector</option><option value="checkbox">Casilla</option></select><button id="add-field" class="button button-outline" type="button">Añadir campo</button></div></div>
+                <div id="fields-list" class="fields-list"></div>
+              </section>
+              <aside class="preview-column"><div class="preview-heading"><span class="eyebrow">Vista previa</span><span class="preview-live"><i></i> en vivo</span></div><div id="form-preview" class="form-preview"></div><div id="share-box" class="share-box" hidden><span class="eyebrow">Enlace publicado</span><div><input id="share-url" readonly><button id="copy-link" class="button button-outline" type="button">Copiar</button></div><p id="copy-message" role="status"></p></div></aside>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="public-view" class="public-layout" hidden>
+        <div id="public-form-wrap" class="public-form-wrap"></div>
+      </section>
+    </main>
+  </div>
+  <script src="forms.js"></script>
+</body>
+</html>
