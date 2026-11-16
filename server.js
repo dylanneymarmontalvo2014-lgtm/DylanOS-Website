@@ -283,6 +283,20 @@ function handleRequest(req, res) {
     : pathname.endsWith('/')
       ? `${relativePath}index.html`
       : relativePath;
+
+  // Si la ruta apunta a un directorio sin barra final (p. ej. /nuestro_equipo),
+  // redirige a la versión con barra para que se sirva su index.html.
+  if (pathname !== '/' && !pathname.endsWith('/') &&
+      !staticExtensions.some(ext => relativePath.toLowerCase().endsWith(ext))) {
+    const dirCandidate = path.normalize(path.join(__dirname, relativePath));
+    if (dirCandidate.startsWith(__dirname + path.sep) &&
+        fs.existsSync(dirCandidate) && fs.statSync(dirCandidate).isDirectory()) {
+      res.writeHead(301, { Location: pathname + '/' });
+      res.end();
+      return;
+    }
+  }
+
   const filePath = path.normalize(path.join(__dirname, requestedPath));
   const isInsideRoot = filePath.startsWith(__dirname + path.sep);
   const hasHiddenSegment = requestedPath.split('/').some(segment => segment.startsWith('.'));

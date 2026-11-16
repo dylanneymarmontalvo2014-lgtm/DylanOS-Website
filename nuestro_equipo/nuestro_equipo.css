@@ -1,0 +1,237 @@
+/* ============================================================
+   DylanOS — Nuestro equipo
+   La navbar y el footer usan las clases compiladas de la web
+   principal (styles/index-Dy2IKqv_.css). Este archivo solo
+   estiliza el contenido propio de la página.
+   ============================================================ */
+
+:root {
+  --bg: #050505;
+  --text: #ffffff;
+  --text-muted: #a1a1aa;   /* zinc-400 */
+  --text-dim: #71717a;     /* zinc-500 */
+  --text-faint: #52525b;   /* zinc-600 */
+  --accent: #ff2b2b;
+  --border: rgba(255, 255, 255, 0.08);
+  --glass: rgba(255, 255, 255, 0.06);
+  --radius: 16px;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ============================================================
+   Hero
+   ============================================================ */
+
+.team-hero {
+  padding: 160px 0 60px;
+  text-align: center;
+}
+
+.hero-badge {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.hero-title {
+  margin-top: 14px;
+  font-size: clamp(34px, 6vw, 56px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.hero-subtitle {
+  margin: 18px auto 0;
+  max-width: 620px;
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   Tarjetas del equipo
+   ============================================================ */
+
+.team-section {
+  padding: 40px 0 100px;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.team-card {
+  padding: 40px 28px;
+  text-align: center;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color 0.3s ease, transform 0.3s ease, background 0.3s ease;
+}
+
+.team-card:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-4px);
+}
+
+/* Foto circular */
+.member-photo {
+  width: 128px;
+  height: 128px;
+  margin: 0 auto 22px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 0 4px rgba(255, 43, 43, 0.15);
+}
+
+.member-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.member-name {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.member-role {
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.member-bio {
+  margin: 14px auto 0;
+  max-width: 320px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+
+.member-tags {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.tag {
+  padding: 5px 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.team-note {
+  margin-top: 48px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+.team-note a {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+
+.team-note a:hover {
+  color: var(--accent);
+}
+
+/* Animación de aparición */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+
+@media (max-width: 860px) {
+  .team-grid {
+    grid-template-columns: 1fr;
+    max-width: 460px;
+  }
+
+  .team-hero {
+    padding-top: 130px;
+  }
+}
+
+@media (max-width: 480px) {
+  .member-photo {
+    width: 108px;
+    height: 108px;
+  }
+
+  .team-card {
+    padding: 32px 20px;
+  }
+}
+
+/* Respeta la preferencia de menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .team-card {
+    transition: none;
+  }
+}
