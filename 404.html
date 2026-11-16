@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>404 — Página no encontrada | DylanOS</title>
+  <meta name="description" content="Error 404: la página que buscas no existe en DylanOS. Vuelve al inicio o explora la documentación.">
+  <meta name="robots" content="noindex">
+
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- CSS real de la web (navbar y footer usan sus mismas utilidades) -->
+  <link crossorigin="" href="/styles/index-Dy2IKqv_.css" rel="stylesheet">
+  <link href="/404/404.css" rel="stylesheet">
+
+  <meta content="yes" name="mobile-web-app-capable">
+  <meta content="black" name="apple-mobile-web-app-status-bar-style">
+  <meta content="DylanOS" name="apple-mobile-web-app-title">
+</head>
+<body>
+  <div class="e404-root relative min-h-screen overflow-x-hidden">
+
+    <!-- Fondos decorativos -->
+    <div class="e404-grid-bg" aria-hidden="true"></div>
+    <div class="e404-aurora" aria-hidden="true"></div>
+
+    <!-- ============ NAVBAR (extraída del index principal) ============ -->
+    <header class="fixed top-0 inset-x-0 z-50">
+      <div class="transition-all duration-300 glass-strong border-b border-white/5">
+        <nav class="max-w-7xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
+          <a href="/" class="flex items-center gap-2.5 group">
+            <span class="inline-block relative h-8 w-8 object-contain transition-transform group-hover:scale-105">
+              <img src="/images/8357dd421_Screenshot_1-removebg-preview.webp" loading="lazy" class="w-full h-full inset-0 absolute object-contain" alt="DylanOS">
+            </span>
+            <span class="text-lg font-semibold tracking-tight">Dylan <span class="text-[#FF2B2B]">OS</span></span>
+          </a>
+          <div class="hidden md:flex items-center gap-1">
+            <a href="/#inicio" class="px-4 py-2 text-sm text-zinc-400 hover:text-white transition-colors">Inicio</a>
+            <a href="/#caracteristicas" class="px-4 py-2 text-sm text-zinc-400 hover:text-white transition-colors">Características</a>
+            <a href="/#experiencia" class="px-4 py-2 text-sm text-zinc-400 hover:text-white transition-colors">Experiencia</a>
+            <a href="/#comunidad" class="px-4 py-2 text-sm text-zinc-400 hover:text-white transition-colors">Comunidad</a>
+            <a href="/#descargas" class="px-4 py-2 text-sm text-zinc-400 hover:text-white transition-colors">Descargas</a>
+          </div>
+          <div class="flex items-center gap-3">
+            <a href="/#descargas" class="hidden md:inline-flex items-center gap-2 bg-[#FF2B2B] hover:bg-[#ff4444] text-white text-sm font-medium px-4 py-2 rounded-full transition-colors glow-red">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" /></svg>
+              Descargar
+            </a>
+            <button id="menu-toggle" class="md:hidden p-2 text-zinc-300 hover:text-white" aria-label="Menú" aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu"><line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" /></svg>
+            </button>
+          </div>
+        </nav>
+        <!-- Menú móvil -->
+        <div id="mobile-menu" class="md:hidden hidden border-t border-white/5 px-5 py-3 flex flex-col gap-1">
+          <a href="/#inicio" class="px-4 py-2.5 text-sm text-zinc-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">Inicio</a>
+          <a href="/#caracteristicas" class="px-4 py-2.5 text-sm text-zinc-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">Características</a>
+          <a href="/#experiencia" class="px-4 py-2.5 text-sm text-zinc-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">Experiencia</a>
+          <a href="/#comunidad" class="px-4 py-2.5 text-sm text-zinc-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">Comunidad</a>
+          <a href="/#descargas" class="px-4 py-2.5 text-sm text-zinc-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">Descargas</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============ CONTENIDO 404 ============ -->
+    <main class="relative z-10 flex flex-col items-center justify-center min-h-screen px-5 sm:px-8 pt-24 pb-16">
+
+      <!-- Badge -->
+      <div class="e404-badge glass rounded-full">
+        <span class="e404-badge-dot"></span>
+        <span>Error 404 · Página no encontrada</span>
+      </div>
+
+      <!-- 404 gigante con glitch -->
+      <h1 class="e404-number" aria-label="404" data-text="404">404</h1>
+
+      <!-- Título y descripción -->
+      <h2 class="e404-title">Esta ruta no existe en <span>DylanOS</span></h2>
+      <p class="e404-desc">
+        Parece que el kernel no encontró la página que buscabas.
+        Quizás fue movida, renombrada o nunca existió en este sistema.
+      </p>
+
+      <!-- Terminal glass -->
+      <div class="e404-terminal glass">
+        <div class="e404-terminal-bar">
+          <span class="e404-dot e404-dot--red"></span>
+          <span class="e404-dot e404-dot--yellow"></span>
+          <span class="e404-dot e404-dot--green"></span>
+          <span class="e404-terminal-title">dylan@os: ~</span>
+        </div>
+        <div class="e404-terminal-body" id="terminal-body" aria-live="polite"></div>
+      </div>
+
+      <!-- Botones -->
+      <div class="e404-actions">
+        <a href="/" class="e404-btn-primary glow-red">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
+          Volver al inicio
+        </a>
+        <a href="/DylanOSdocs/" class="e404-btn-ghost">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" /></svg>
+          Ver documentación
+        </a>
+      </div>
+
+      <a href="/nuestro_equipo/" class="e404-team-link">
+        ¿Creías que era un bug? Reporta el problema a
+        <span>nuestro equipo</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+      </a>
+    </main>
+
+    <!-- ============ FOOTER (extraído del index principal) ============ -->
+    <footer class="relative z-10 border-t border-white/5 py-12">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-8">
+          <div class="max-w-sm">
+            <div class="flex items-center gap-2.5">
+              <span class="inline-block relative h-7 w-7 object-contain">
+                <img src="/images/8357dd421_Screenshot_1-removebg-preview.webp" loading="lazy" class="w-full h-full inset-0 absolute object-contain" alt="DylanOS">
+              </span>
+              <span class="text-base font-semibold">Dylan <span class="text-[#FF2B2B]">OS</span></span>
+            </div>
+            <p class="mt-3 text-sm text-zinc-500 leading-relaxed">DylanOS: una nueva forma de experimentar Linux.</p>
+          </div>
+          <nav class="flex flex-wrap gap-x-6 gap-y-2">
+            <a href="/#inicio" class="text-sm text-zinc-400 hover:text-white transition-colors">Inicio</a>
+            <a href="/#caracteristicas" class="text-sm text-zinc-400 hover:text-white transition-colors">Características</a>
+            <a href="https://github.com/dylanneymarmontalvo2014-lgtm/DylanOS" target="_blank" rel="noopener noreferrer" class="text-sm text-zinc-400 hover:text-white transition-colors">GitHub</a>
+            <a href="/DylanOSdocs/" class="text-sm text-zinc-400 hover:text-white transition-colors">Documentación</a>
+            <a href="/#comunidad" class="text-sm text-zinc-400 hover:text-white transition-colors">Comunidad</a>
+            <a href="/nuestro_equipo/" class="text-sm text-zinc-400 hover:text-white transition-colors">Nuestro equipo</a>
+          </nav>
+        </div>
+        <div class="mt-10 pt-6 border-t border-white/5 text-xs text-zinc-600">© 2026 DylanOS. Proyecto independiente.</div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="/404/404.js" defer></script>
+</body>
+</html>
